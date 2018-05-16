@@ -10,57 +10,8 @@ import requests
 from .helpers import request_error_retry
 
 
-class Name():
-    def __init__(self, name, token, debug=False):
-        self.__name = name
-        self.__token = token
-        self.__debug = debug
-        if self.__debug:
-            self.__server = "https://api.dev.name.com/v4/"
-        else:
-            self.__server = "https://api.name.com/v4/"
-        self.__client = None
+class DNSMixin():
 
-    @property
-    def client(self):
-        if not self.__client:
-            self.__client = requests.Session()
-            self.__client.auth = (self.__name, self.__token)
-        return self.__client
-
-    @request_error_retry()
-    def get(self, path, **kwargs):
-        url = self.__server + path
-        return self.client.get(url, **kwargs).json()
-
-    @request_error_retry()
-    def post(self, path, data):
-        url = self.__server + path
-        return self.client.post(url, json=data).json()
-
-    @request_error_retry()
-    def put(self, path, data):
-        url = self.__server + path
-        return self.client.put(url, json=data).json()
-
-    @request_error_retry()
-    def delete(self, path):
-        url = self.__server + path
-        return self.client.delete(url).json()
-
-    def hello(self):
-        return self.get("hello")
-
-    # domains
-    def check_availability(self, domain_names):
-        return self.post(
-            "domains:checkAvailability",
-            {
-                "domainNames": domain_names
-            }
-        )
-
-    # DNS
     def list_records(self, domain_name, **kwargs):
         """
         domain_name: example.org
@@ -107,7 +58,7 @@ class Name():
 
     def update_record(self, domain_name, id_, host, type_, answer, ttl=300, priority=None):
         """
-        parameters are nearly same as create_record
+        parameters are nearly the same as create_record
         """
         path = "domains/{}/records/{}".format(domain_name, id_)
         data = {
@@ -125,3 +76,62 @@ class Name():
     def delete_record(self, domain_name, id_):
         path = "domains/{}/records/{}".format(domain_name, id_)
         return self.delete(path)
+
+
+class DomainMixin():
+
+    def list_domains(self, **kwargs):
+        return self.get("domains", params=kwargs)
+
+    def get_domain(self, domain_name):
+        return self.get("domains/{}".format(domain_name))
+
+    def check_availability(self, domain_names):
+        return self.post(
+            "domains:checkAvailability",
+            {
+                "domainNames": domain_names
+            }
+        )
+
+
+class Name(DNSMixin, DomainMixin):
+    def __init__(self, name, token, debug=False):
+        self.__name = name
+        self.__token = token
+        self.__debug = debug
+        if self.__debug:
+            self.__server = "https://api.dev.name.com/v4/"
+        else:
+            self.__server = "https://api.name.com/v4/"
+        self.__client = None
+
+    @property
+    def client(self):
+        if not self.__client:
+            self.__client = requests.Session()
+            self.__client.auth = (self.__name, self.__token)
+        return self.__client
+
+    @request_error_retry()
+    def get(self, path, **kwargs):
+        url = self.__server + path
+        return self.client.get(url, **kwargs).json()
+
+    @request_error_retry()
+    def post(self, path, data):
+        url = self.__server + path
+        return self.client.post(url, json=data).json()
+
+    @request_error_retry()
+    def put(self, path, data):
+        url = self.__server + path
+        return self.client.put(url, json=data).json()
+
+    @request_error_retry()
+    def delete(self, path):
+        url = self.__server + path
+        return self.client.delete(url).json()
+
+    def hello(self):
+        return self.get("hello")
