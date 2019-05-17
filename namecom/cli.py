@@ -58,7 +58,9 @@ def create_dns(domain, host, dns_type, answer, name, token):
     # delete existing records and create new
     for record in existing_records:
         client.delete_record(record["id"])
-    client.create_record(domain, host, dns_type, answer)
+    data = client.create_record(domain, host, dns_type, answer)
+
+    click.echo("Done {}".format(data))
 
 
 @cli.command()

@@ -39,7 +39,7 @@ namecli delete_dns
 
 #### SDK development
 
-so far, not all name.com api are supported
+So far, not all name.com api are supported.
 
 Initialization
 ```python

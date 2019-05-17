@@ -94,6 +94,20 @@ class DomainMixin():
             }
         )
 
+    def search(self, keyword, tld_filter):
+        """
+        keyword: example
+        tld_filter: ["org", "com"]
+        """
+        return self.post(
+            "domains:search",
+            {
+                "keyword": keyword,
+                "tldFilter": tld_filter,
+                "timeout": 5000
+            },
+        )
+
 
 class Name(DNSMixin, DomainMixin):
     def __init__(self, name, token, debug=False):
