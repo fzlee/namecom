@@ -26,6 +26,10 @@ class DNSMixin():
             params=kwargs
         )
 
+    def list_records_for_host(self, domain_name, host, **kwargs):
+        data = self.list_records(domain_name, **kwargs)
+        return [i for i in data.get("records", []) if i.get("host", None) == host]
+
     def get_record(self, domain_name, id_):
         """
         domain_name: example.org
