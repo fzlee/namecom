@@ -49,3 +49,12 @@ name.list_records("example.org", page=1, perPage=1000)
 name.delete_record("example.org", id_="12345", )
 name.create_record("example.org", "www", "A", "127.0.0.1")
 ```
+
+#### DDNS usage
+```bash
+python ddns.py 
+    --domain example.org
+    --host www
+    --username <your namecom account>
+    --token <your namecom token>
+```
