@@ -16,7 +16,7 @@ export NAMECOM_TOKEN=<your namecom token>
 ```
 
 
-To create a dns record
+To delete a DNS record
 ```bash
 namecli create_dns 
     --domain example.org
@@ -36,6 +36,14 @@ namecli delete_dns
     --token <your namecom token>
 ```
 
+To create a DDNS record
+```bash
+namecli ddns 
+    --domain example.org
+    --host www
+    --name <your namecom account>
+    --token <your namecom token>
+```
 
 #### SDK development
 
@@ -50,11 +58,3 @@ name.delete_record("example.org", id_="12345", )
 name.create_record("example.org", "www", "A", "127.0.0.1")
 ```
 
-#### DDNS usage
-```bash
-python ddns.py 
-    --domain example.org
-    --host www
-    --username <your namecom account>
-    --token <your namecom token>
-```
