@@ -29,3 +29,14 @@ def request_error_retry(repeat=3, sleep=0):
                         continue
         return new_func
     return wrapper
+
+
+def raise_for_exception(old_func):
+    @functools.wraps(old_func)
+    def new_func(*args, **kwargs):
+        response = old_func(*args, **kwargs)
+        if response.status_code // 100 != 2:
+            raise Exception("HTTP request failed, response body: {}".format(response.text))
+        return response
+    return new_func
+

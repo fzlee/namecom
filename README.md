@@ -11,7 +11,7 @@ pip install namecom --upgrade
 
 If you do not want to append --name and --token to the command every time, run the following command should do some help
 ```bash
-export NAMECOM_NAME=<your namecom account>
+export NAMECOM_NAME=<your namecom username>
 export NAMECOM_TOKEN=<your namecom token>
 ```
 
@@ -21,9 +21,9 @@ To delete a DNS record
 namecli create_dns 
     --domain example.org
     --host www
-    --dns_type A
+    --dns-type A
     --answer 127.0.0.1
-    --name <your namecom account>
+    --name <your namecom username>
     --token <your namecom token>
 ```
 
@@ -32,7 +32,7 @@ To delete a DNS record
 namecli delete_dns 
     --domain example.org
     --host www
-    --name <your namecom account>
+    --name <your namecom username>
     --token <your namecom token>
 ```
 
@@ -41,7 +41,7 @@ To create a DDNS record
 namecli ddns 
     --domain example.org
     --host www
-    --name <your namecom account>
+    --name <your namecom username>
     --token <your namecom token>
 ```
 

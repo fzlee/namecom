@@ -32,12 +32,12 @@ def get_namecom_client(name, token):
 
 
 @cli.command()
-@click.option("--domain", help="domain name like example.org")
-@click.option("--host", help="host like www, www1")
-@click.option("--dns_type", help="DNS record type, like A, cname")
-@click.option("--answer", help="127.0.0.1, example.org, etc")
-@click.option("--name", help="name for name.com", default="")
-@click.option("--token", help="token for name.com", default="")
+@click.option("--domain", help="domain name like example.org", required=True)
+@click.option("--host", help="host like www, www1", required=True)
+@click.option("--dns-type", help="DNS record type, like A, cname", required=True)
+@click.option("--answer", help="127.0.0.1, example.org, etc", required=True)
+@click.option("--name", help="name for name.com", default="", required=False)
+@click.option("--token", help="token for name.com", default="", required=False)
 def create_dns(domain, host, dns_type, answer, name, token):
     client = get_namecom_client(name, token)
     existing_records = client.list_records_for_host(domain, host)
@@ -63,10 +63,10 @@ def create_dns(domain, host, dns_type, answer, name, token):
 
 
 @cli.command()
-@click.option("--domain", help="domain name like example.org")
-@click.option("--host", help="host like www, www1")
-@click.option("--name", help="name for name.com", default="")
-@click.option("--token", help="token for name.com", default="")
+@click.option("--domain", help="domain name like example.org", required=True)
+@click.option("--host", help="host like www, www1", required=True)
+@click.option("--name", help="name for name.com", default="", required=False)
+@click.option("--token", help="token for name.com", default="", required=False)
 def delete_dns(domain, host, name, token):
     client = get_namecom_client(name, token)
     existing_records = client.list_records_for_host(domain, host)
@@ -78,11 +78,11 @@ def delete_dns(domain, host, name, token):
 @cli.command()
 @click.option("--domain", required=True, help="domain name like example.org")
 @click.option("--host", required=True, help="host like www, www1")
-@click.option("--name", required=True, help="username for name.com")
-@click.option("--token", required=True, help="token for name.com")
+@click.option("--name", help="name for name.com", default="", required=False)
+@click.option("--token", help="token for name.com", default="", required=False)
 def ddns(domain=None, host=None, name=None, token=None):
     """Set name.com dns record to public IP."""
-    ip = requests.get('https://api.ipify.org').text
+    ip = requests.get('https://api.ipify.org', timeout=10).text
     client = get_namecom_client(name, token)
 
     click.echo("current IP: {}".format(ip))

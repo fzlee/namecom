@@ -7,7 +7,7 @@
 """
 import requests
 
-from .helpers import request_error_retry
+from .helpers import request_error_retry, raise_for_exception
 
 
 class DNSMixin():
@@ -24,7 +24,7 @@ class DNSMixin():
         return self.get(
             path,
             params=kwargs
-        )
+        ).json()
 
     def list_records_for_host(self, domain_name, host, **kwargs):
         data = self.list_records(domain_name, **kwargs)
@@ -36,7 +36,7 @@ class DNSMixin():
         id: id for record
         """
         path = "domains/{}/records/{}".format(domain_name, id_)
-        return self.get(path)
+        return self.get(path).json()
 
     def create_record(self, domain_name, host, type_, answer, ttl=300, priority=None):
         """
@@ -58,7 +58,7 @@ class DNSMixin():
         if type_ in ("MX", "SRV"):
             data["priority"] = priority
 
-        return self.post(path, data)
+        return self.post(path, data).json()
 
     def update_record(self, domain_name, id_, host, type_, answer, ttl=300, priority=None):
         """
@@ -75,20 +75,20 @@ class DNSMixin():
         if type_ in ("MX", "SRV"):
             data["priority"] = priority
 
-        return self.put(path, data)
+        return self.put(path, data).json()
 
     def delete_record(self, domain_name, id_):
         path = "domains/{}/records/{}".format(domain_name, id_)
-        return self.delete(path)
+        return self.delete(path).json()
 
 
 class DomainMixin():
 
     def list_domains(self, **kwargs):
-        return self.get("domains", params=kwargs)
+        return self.get("domains", params=kwargs).json()
 
     def get_domain(self, domain_name):
-        return self.get("domains/{}".format(domain_name))
+        return self.get("domains/{}".format(domain_name)).json()
 
     def check_availability(self, domain_names):
         return self.post(
@@ -96,7 +96,7 @@ class DomainMixin():
             {
                 "domainNames": domain_names
             }
-        )
+        ).json()
 
     def search(self, keyword, tld_filter):
         """
@@ -110,7 +110,7 @@ class DomainMixin():
                 "tldFilter": tld_filter,
                 "timeout": 5000
             },
-        )
+        ).json()
 
 
 class Name(DNSMixin, DomainMixin):
@@ -131,25 +131,29 @@ class Name(DNSMixin, DomainMixin):
             self.__client.auth = (self.__name, self.__token)
         return self.__client
 
+    @raise_for_exception
     @request_error_retry()
     def get(self, path, **kwargs):
         url = self.__server + path
-        return self.client.get(url, **kwargs).json()
+        return self.client.get(url, **kwargs)
 
+    @raise_for_exception
     @request_error_retry()
     def post(self, path, data):
         url = self.__server + path
-        return self.client.post(url, json=data).json()
+        return self.client.post(url, json=data)
 
+    @raise_for_exception
     @request_error_retry()
     def put(self, path, data):
         url = self.__server + path
-        return self.client.put(url, json=data).json()
+        return self.client.put(url, json=data)
 
+    @raise_for_exception
     @request_error_retry()
     def delete(self, path):
         url = self.__server + path
-        return self.client.delete(url).json()
+        return self.client.delete(url)
 
     def hello(self):
         return self.get("hello")
