@@ -7,7 +7,7 @@ pip install namecom --upgrade
 ``` 
 
 
-#### Command line guide
+#### Command line guidance
 
 If you do not want to append --name and --token to the command every time, run the following command should do some help
 ```bash
