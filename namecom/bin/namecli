@@ -44,21 +44,22 @@ def create_dns(domain, host, dns_type, answer, name, token):
 
     if len(existing_records) == 1:
         record = existing_records[0]
-        # keep existing record
         if record["type"] == dns_type and record["answer"] == answer:
-            click.echo("We have found same record there, quit")
+            click.echo("We have found an identical record, exit")
             return
         else:
             # update existing record
-            click.echo("update existing record")
+            click.echo("Updating existing record")
             client.update_record(domain, record["id"], host, dns_type, answer)
+            click.echo("Done")
             return
 
     # delete existing records and create new
     for record in existing_records:
-        client.delete_record(record["id"])
+        click.echo("Deleting Record {}".format(record))
+        client.delete_record(domain, record["id"])
+    click.echo("Creating new...")
     data = client.create_record(domain, host, dns_type, answer)
-
     click.echo("Done {}".format(data))
 
 

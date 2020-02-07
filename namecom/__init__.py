@@ -27,8 +27,27 @@ class DNSMixin():
         ).json()
 
     def list_records_for_host(self, domain_name, host, **kwargs):
+        """
+        data = {
+            "records": [{
+                "fqdn": "www.example.com.",
+                "host": "www",
+                ""
+            }, {
+                "fqdn": "example.com.",
+            }]
+        }
+        """
+        if host == "@":
+            fqdn = domain_name
+        else:
+            fqdn = "{}.{}".format(host, domain_name)
+        if not fqdn.endswith("."):
+            fqdn += "."
+
         data = self.list_records(domain_name, **kwargs)
-        return [i for i in data.get("records", []) if i.get("host", None) == host]
+
+        return [i for i in data.get("records", []) if i.get("fqdn", None) == fqdn]
 
     def get_record(self, domain_name, id_):
         """
