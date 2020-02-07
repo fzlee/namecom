@@ -18,7 +18,7 @@ export NAMECOM_TOKEN=<your namecom token>
 
 To delete a DNS record
 ```bash
-namecli create_dns 
+namecli create-dns 
     --domain example.org
     --host www
     --dns-type A
@@ -29,7 +29,7 @@ namecli create_dns
 
 To delete a DNS record
 ```bash
-namecli delete_dns 
+namecli delete-dns 
     --domain example.org
     --host www
     --name <your namecom username>
