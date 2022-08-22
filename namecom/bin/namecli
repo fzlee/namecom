@@ -103,7 +103,7 @@ def ddns(domain=None, host=None, name=None, token=None):
         else:
             # update existing record
             click.echo("update existing record")
-            name.update_record(domain, record["id"], host, "A", ip)
+            client.update_record(domain, record["id"], host, "A", ip)
             click.echo("{}.{} => {} done".format(host, domain, ip))
 
 
